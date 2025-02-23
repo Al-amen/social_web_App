@@ -1,0 +1,42 @@
+{% extends "account/base.html" %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-5">
+            <div class="card shadow-sm">
+                <div class="card-header text-center bg-primary text-white">
+                    <h4>Login</h4>
+                </div>
+                <div class="card-body">
+                    <form method="POST">
+                        {% csrf_token %}
+                        
+                        <div class="mb-3">
+                            <label for="id_username" class="form-label">Username</label>
+                            {{ form.username }}
+                            <small class="text-danger">{{ form.username.errors }}</small>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="id_password" class="form-label">Password</label>
+                            {{ form.password }}
+                            <small class="text-danger">{{ form.password.errors }}</small>
+                        </div>
+
+                        <div class="text-center">
+                            <button type="submit" class="btn btn-primary w-50">Login</button>
+                        </div>
+                    </form>
+                </div>
+                <div class="card-footer text-center">
+                    <small>Don't have an account? <a href="{% url 'account:register' %}">Register</a></small><br>
+                    <small><a href="{% url "account:password_reset" %}">Forgot password?</a></small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{% endblock  %}

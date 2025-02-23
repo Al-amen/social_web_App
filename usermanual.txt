@@ -1,0 +1,5 @@
+
+superuser admin , pass = admin
+
+user1 = alamen   , pass = al1234567890
+user2 = testuser ,pass = al123456@
