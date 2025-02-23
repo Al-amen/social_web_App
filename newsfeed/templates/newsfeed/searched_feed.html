@@ -1,0 +1,24 @@
+{% extends "account/base.html" %}
+
+
+{% block content %}
+
+{% include "account/component/navbar.html" %}
+
+<div class="container-fluid">
+    <div class="row">
+
+      {% include "account/component/leftsidebar.html" %} 
+
+      {% include "account/profile/create_profile.html" %}
+
+      
+
+      {% include "account/component/footer.html" %}
+        
+       
+    </div>
+</div>
+
+
+{% endblock %}

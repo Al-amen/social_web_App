@@ -48,26 +48,13 @@ def profile(request, username=None):
         user = request.user
 
     profile = get_object_or_404(Profile.objects.select_related('user'), user=user)
-    posts = profile.user.posts.all()
+    posts = profile.user.posts.all().order_by('-created_at')
 
     return render(request, 'account/profile/profile.html', {
         "profile": profile,
         "posts": posts
     })
 
-@login_required
-def create_profile(request):
-    if request.method == 'POST':
-        form = ProfileForm(request.POST, request.FILES)
-        if form.is_valid():
-            profile = form.save(commit=False)
-            profile.user = request.user
-            profile.save()
-            messages.success(request, 'Profile created successfully!')
-            return redirect('account:profile')
-    else:
-        form = ProfileForm()
-    return render(request, 'profile/create_profile.html', {'form': form})
 
 
 @login_required
@@ -83,15 +70,6 @@ def update_profile(request):
         form = ProfileForm(instance=profile)
     return render(request, 'account/profile/edit_profile.html', {'form': form})
 
-
-@login_required
-def delete_profile(request):
-    profile = get_object_or_404(Profile, user=request.user)
-    if request.method == 'POST':
-        profile.delete()
-        messages.success(request, 'Profile deleted successfully.')
-        return redirect('newsfeed:newsfeed')  # Redirecting to newsfeed after deletion
-    return render(request, 'profile/delete_profile.html')
 
 
 

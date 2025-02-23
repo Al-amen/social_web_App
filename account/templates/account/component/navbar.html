@@ -6,8 +6,9 @@
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
-            <form class="d-flex mx-auto w-70 ">
-                <input class="form-control me-2 rounded-pill" type="search" placeholder="Search Facebook">
+            <form class="d-flex mx-auto w-70" method="get" action="{% url 'newsfeed:search_post' %}">
+                <input class="form-control me-2 rounded-pill" type="search" name="q" placeholder="Search Facebook" value="{{ request.GET.q }}">
+                <button class="btn btn-outline-primary rounded-pill" type="submit">Search</button>
             </form>
             <ul class="navbar-nav ms-auto">
                 <li class="nav-item">

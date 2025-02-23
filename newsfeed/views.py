@@ -3,6 +3,7 @@ from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from django.db.models import Q
 
 # Create your views here.
 from newsfeed.models import Post, Comment
@@ -77,13 +78,16 @@ def news_feed(request):
     posts = Post.objects.all().order_by('-created_at')
 
     for post in posts:
-       # Check if the user has a profile before accessing the profile_picture
+       
         if hasattr(post.user, 'profile') and post.user.profile.profile_picture:
             post.user_profile_picture = post.user.profile.profile_picture.url
         else:
-            post.user_profile_picture = None  # Or set a default profil
+            post.user_profile_picture = None  
      
     return render(request,'newsfeed/feed.html',{"posts": posts})
+
+
+
 
 
 @login_required
@@ -121,5 +125,42 @@ def delete_post(request, post_id):
     post.delete()
     messages.success(request, 'Post deleted successfully!')
     return redirect('newsfeed:newsfeed')  # Adjust redirect as needed
+
+
+
+def search_post(request):
+    posts = Post.objects.all()
+
+    # 🔍 Keyword Search
+    query = request.GET.get('q')
+    if query:
+        posts = posts.filter(Q(content__icontains=query))
+
+    # 🗂️ Filter by Date
+    date_order = request.GET.get('date_order')
+    if date_order == 'newest':
+        posts = posts.order_by('-created_at')
+    elif date_order == 'oldest':
+        posts = posts.order_by('created_at')
+
+    # 🖼️ Filter by Media Type
+    media_type = request.GET.get('media_type')
+    if media_type == 'text':
+        posts = posts.filter(image__isnull=True)
+    elif media_type == 'image':
+        posts = posts.filter(image__isnull=False)
+
+    # 👤 Filter by Author
+    author = request.GET.get('author')
+    if author:
+        posts = posts.filter(user__username__icontains=author)
+
+    # 🔗 Attach Profile Picture
+    for post in posts:
+        post.user_profile_picture = (
+            post.user.profile.profile_picture.url if hasattr(post.user, 'profile') and post.user.profile.profile_picture else None
+        )
+
+    return render(request, 'newsfeed/searched_feed.html', {"posts": posts})
 
 
